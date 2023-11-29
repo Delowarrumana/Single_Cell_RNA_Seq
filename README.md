@@ -2,8 +2,9 @@
 ##Project overview:
 
 The intestine is the organ that plays an important role in nutrient digestion, absorption, defense from microorganisms, and hormone secretion. Here, I took the single-cell RNA-seq data of the epithelial cell from the human colon (Wang et al., 2018) and search for the following question:
-•	Did each cluster exhibit highly expressed marker genes that matched with the provided cell-type annotation for each cluster?
-•	Within the Paneth cell of the colon population, what specific sets of genes were overexpressed and under-expressed between males and females?
+Did each cluster exhibit highly expressed marker genes that matched with the provided cell-type annotation for each cluster?
+Within the Paneth cell of the colon population, what specific sets of genes were overexpressed and under-expressed between males and females?
+Did these differentially expressed genes belong to a particular signalling pathway?
 
 import scanpy as sc
 
@@ -173,9 +174,9 @@ adata.raw = adata
 
 We then regress out effects of total counts per cell and the percentage of mitochondrial genes expressed and scale the data to unit variance. This code snippet may take some time to run
 
-Dimensionality reduction and clustering
+# Dimensionality reduction and clustering
 
-Dimensionality reduction with PCA
+# Dimensionality reduction with PCA
 
 We would like to compress the data matrix into a smaller subspace while still retaining the most meaningful information. PCA is a widely accepted algorithm for this purpose. However, the number of principal components to retain, without keeping too much technical noise, is greatly dependent on the dataset itself (https://satijalab.org/seurat/articles/pbmc3k_tutorial).
 
@@ -242,9 +243,9 @@ C:\Users\mdhdu\AppData\Roaming\Python\Python310\site-packages\scanpy\plotting\_t
 C:\Users\mdhdu\AppData\Roaming\Python\Python310\site-packages\scanpy\plotting\_tools\scatterplots.py:391: UserWarning: No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored
   cax = scatter(
 ![1](https://github.com/Delowarrumana/Single_Cell_RNA_Seq/assets/146145134/ac412fb1-1532-4cf9-941e-5ad00a7e15d9)
-Find highly expressed genes in each cluster
+# Find highly expressed genes in each cluster
 
-Analysis across different cell types
+# Analysis across different cell types
 
 After we have preprocessed the data, we would like to run differential gene analysis to identify what genes are most highly expressed in one particular cluster against the rest. The differential analysis can be run using our previous clustering methods: cell_type, and sex.
 
@@ -252,9 +253,7 @@ The results shown here use Scanpy's built-in sc.tl.rank_gene_groups function, wh
 
 Here, we run sc.tl.rank_gene_groups across cell_type clusters to determine the most differentially expressed genes between one cell_type cluster and the rest.
 
-# This is used to find differentially expressed genes found in each cluster
-
-# compared with the rest
+# This is used to find differentially expressed genes found in each cluster compared with the rest
 
 sc.tl.rank_genes_groups(
 
@@ -320,9 +319,7 @@ markers_df = pd.DataFrame(
     
 )
 
-# Extract only differentially expressed genes
-
-# p-value smaller than 0.05 and a log fold change larger than 1
+# Extract only differentially expressed genes p-value smaller than 0.05 and a log fold change larger than 1
 
 markers_df = markers_df[(markers_df["pval_adj"] < 0.05) & (abs(markers_df["lfc"]) > 1)]
 
@@ -536,7 +533,7 @@ Log2 fold change & Wald test p-value: condition male vs female
 
 ... done in 9.24 seconds.
 ![1](https://github.com/Delowarrumana/Single_Cell_RNA_Seq/assets/146145134/34172280-80f8-49f2-a25c-1e920a32780a)
-Visualization
+# Visualization
 
 Now visualize the set of genes that are differentially expressed across these conditions
 
@@ -547,8 +544,18 @@ genes2 = sc.get.rank_genes_groups_df(adata_colon, group='female', key='wilcoxon'
 genes = genes1.tolist() +  genes2.tolist() 
 
 sc.pl.dotplot(adata_colon,genes, groupby='sex')
-![1](https://github.com/Delowarrumana/Single_Cell_RNA_Seq/assets/146145134/df31af1e-8672-4c4f-9bdb-7ae6c417406a)
+![17545542_10212617415739216_4646768945329776620_o](https://github.com/Delowarrumana/Single_Cell_RNA_Seq/assets/146145134/c1b181e7-8be2-400d-bdf6-52c5ecfb46dd)
+# Gene set enrichments for paneth cell of colon clusters
 
+Here, I loaded the genes form adata_colon, group by 'sex' in paneth cell of colon clusters in https://reactome.org/PathwayBrowser/#/DTAB=ST&ANALYSIS=MjAyMzExMjkxNDI3NTVfNjU3MQ%253D%253D.
+After analysis the reults were saved in excel.
+
+import pandas as pd
+
+df = pd.read_excel('C:/Users/mdhdu/AppData/Local/Programs/Python310/Scripts/cmd/DH_excel.xlsx')
+
+df.head(3)
+![17545542_10212617415739216_4646768945329776620_o](https://github.com/Delowarrumana/Single_Cell_RNA_Seq/assets/146145134/20467e44-56b7-4f8c-920a-55f0a5537ce5)
 
 
 
