@@ -555,6 +555,7 @@ import pandas as pd
 df = pd.read_excel('C:/Users/mdhdu/AppData/Local/Programs/Python310/Scripts/cmd/DH_excel.xlsx')
 
 df.head(3)
+
 ![17545542_10212617415739216_4646768945329776620_o](https://github.com/Delowarrumana/Single_Cell_RNA_Seq/assets/146145134/20467e44-56b7-4f8c-920a-55f0a5537ce5)
 
 
